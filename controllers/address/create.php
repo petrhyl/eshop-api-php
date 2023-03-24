@@ -7,6 +7,9 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Contr
 
 require_once '../../config/bootstrap.php';
 
+set_error_handler("ErrorExit::handleError");
+set_exception_handler("ErrorExit::handleException");
+
 $data = (array)json_decode(file_get_contents("php://input"), true);
 
 // * * * data validation * * *
@@ -22,7 +25,7 @@ $town = trim(strip_tags($data['town']));
 $postal = preg_replace('/\s+/', '',strip_tags($data['postal']));
 $country = trim(strip_tags($data['country']));
 
-$validate = new InputValidation($err);
+$validate = new InputValidation();
 
 $validate->ValidateAddress($customer, $street, $house, $town, $postal, $country);
 

@@ -5,6 +5,9 @@ header('Access-Control-Allow-Methods: GET');
 
 require_once '../../config/bootstrap.php';
 
+set_error_handler("ErrorExit::handleError");
+set_exception_handler("ErrorExit::handleException");
+
 // * * * * * * * *
 // api example: server_dir/api/controllers/products/getAll.php
 // * * * * * * * *
@@ -35,7 +38,6 @@ require_once '../../config/bootstrap.php';
 //     ]
 //}
 
-$err = new ErrorExit();
 
 // --- set database connection ---
 
@@ -48,7 +50,7 @@ $product = new Product($conn);
 $data['products'] = $product->getAllProducts();
 
 if (($data['products'] === false) || (count($data['products']) === 0)) {
-   
+    throw new UnexpectedValueException('Cannot load products.', 500);
 }
 
 echo json_encode($data);

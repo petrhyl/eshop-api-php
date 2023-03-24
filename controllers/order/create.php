@@ -12,6 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 require_once '../../config/bootstrap.php';
 
+set_error_handler("ErrorExit::handleError");
+set_exception_handler("ErrorExit::handleException");
+
 // * * * * *
 // * api example: localhost:8008/api/controllers/order/create.php
 // * * * * *
@@ -36,9 +39,6 @@ require_once '../../config/bootstrap.php';
 $data = (array)json_decode(file_get_contents("php://input"), true);
 
 // * * * data validation * * *
-
-set_error_handler("ErrorExit::handleError");
-set_exception_handler("ErrorExit::handleException");
 
 if (count($data) < 2) {
     throw new RangeException("Missing data to create order.", 400);    

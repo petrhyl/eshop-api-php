@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 require_once '../../config/bootstrap.php';
 
-//set_error_handler("ErrorExit::handleError");
+set_error_handler("ErrorExit::handleError");
 set_exception_handler("ErrorExit::handleException");
 
 // * * * * *

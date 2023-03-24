@@ -5,6 +5,9 @@ header('Access-Control-Allow-Methods: GET');
 
 require_once '../../config/bootstrap.php';
 
+set_error_handler("ErrorExit::handleError");
+set_exception_handler("ErrorExit::handleException");
+
 // * * * * * * * *
 // api example: server_dir/api/controllers/products/getOne.php?id=2
 // * * * * * * * *
@@ -33,8 +36,6 @@ require_once '../../config/bootstrap.php';
 
 
 // * * * validate params * * *
-
-set_exception_handler("ErrorExit::handleException");
 
 if (!isset($_GET['id'])) {
     throw new RangeException("Parameter id is missing!", 400); 

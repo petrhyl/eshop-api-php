@@ -6,19 +6,20 @@ header('Access-Control-Allow-Methods: GET');
 
 require_once '../../config/bootstrap.php';
 
-$err= new ErrorExit();
+set_error_handler("ErrorExit::handleError");
+set_exception_handler("ErrorExit::handleException");
 
 // * * * validate params * * *
 
 if (!isset($_GET['firstname']) || !isset($_GET['lastname']) || !isset($_GET['email'])) {
-    $err->exitEcho(400, "Parameter is missing!");
+    throw new RangeException("Parameter is missing!", 400);
 }
 
 $frstnm = strip_tags($_GET['firstname']);
 $lstnm = strip_tags($_GET['lastname']);
 $mail = strip_tags($_GET['email']);
 
-$validate = new InputValidation($err);
+$validate = new InputValidation();
 
 $validate->ValidateCustomer($frstnm, $lstnm, $mail);
 
@@ -26,11 +27,7 @@ $validate->ValidateCustomer($frstnm, $lstnm, $mail);
 
 $db = new Database(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);
 
-try {
-    $conn = $db->getConnection();
-} catch (PDOException $ex) {
-    $err->exitEcho(500, 'Cannot connect to a database.');
-}
+$conn = $db->getConnection();
 
 $customer = new Customer($conn);
 
@@ -39,7 +36,7 @@ $customer = new Customer($conn);
 $id = $customer->findCustomerIdByNameAndEmail($frstnm, $lstnm, $mail);
 
 if ($id === false) {
-    $err->exitEcho(500, 'Internal error. Something went wrong.');
+    throw new UnexpectedValueException('Internal error. Something went wrong.', 500);
 }
 
 http_response_code(200);
