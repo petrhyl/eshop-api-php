@@ -50,7 +50,7 @@ $product = new Product($conn);
 $data['products'] = $product->getAllProducts();
 
 if (($data['products'] === false) || (count($data['products']) === 0)) {
-    throw new UnexpectedValueException('Cannot load products.', 500);
+    throw new UnexpectedValueException('Internal error. Cannot load products.', 500);
 }
 
 echo json_encode($data);

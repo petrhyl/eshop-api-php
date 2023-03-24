@@ -38,7 +38,7 @@ set_exception_handler("ErrorExit::handleException");
 // * * * validate params * * *
 
 if (!isset($_GET['id'])) {
-    throw new RangeException("Parameter id is missing!", 400); 
+    throw new RangeException("Parameter id is missing!", 400);
 }
 
 $id_str = strip_tags($_GET['id']);

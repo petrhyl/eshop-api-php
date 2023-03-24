@@ -41,14 +41,14 @@ $data = (array)json_decode(file_get_contents("php://input"), true);
 // * * * data validation * * *
 
 if (count($data) < 2) {
-    throw new RangeException("Missing data to create order.", 400);    
+    throw new RangeException("Missing data to create order.", 400);
 }
 
 $customer_id = $data['customer']['id'];
 $ordered_products = $data['products'];
 
 if (count($ordered_products) < 1) {
-    throw new RangeException("Missing data to save ordered products.", 400); 
+    throw new RangeException("Missing data to save ordered products.", 400);
 }
 
 $validate = new InputValidation();

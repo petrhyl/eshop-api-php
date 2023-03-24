@@ -7,6 +7,11 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Contr
 
 require_once '../../config/bootstrap.php';
 
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    header("HTTP/1.1 200 OK");
+    die();
+}
+
 set_error_handler("ErrorExit::handleError");
 set_exception_handler("ErrorExit::handleException");
 
@@ -15,14 +20,14 @@ $data = (array)json_decode(file_get_contents("php://input"), true);
 // * * * data validation * * *
 
 if (count($data) < 5) {
-    throw new RangeException("Missing data to save address.", 400); 
+    throw new RangeException("Missing data to save address.", 400);
 }
 
 $customer = $data['customerId'];
 $street = trim(strip_tags($data['street']));
 $house = trim(strip_tags($data['house']));
 $town = trim(strip_tags($data['town']));
-$postal = preg_replace('/\s+/', '',strip_tags($data['postal']));
+$postal = preg_replace('/\s+/', '', strip_tags($data['postal']));
 $country = trim(strip_tags($data['country']));
 
 $validate = new InputValidation();
@@ -45,7 +50,22 @@ if ($address_arr === false) {
     throw new UnexpectedValueException("Internal error. Something is wrong.", 500);
 }
 
+$address_match = false;
 if (count($address_arr) > 0) {
+    for ($i = 0; $i < count($address_arr); $i++) {
+        if (
+            $address_arr[$i]->street === $street &&
+            $address_arr[$i]->house === $house &&
+            $address_arr[$i]->town === $town &&
+            $address_arr[$i]->postal_code === $postal &&
+            $address_arr[$i]->country === $country
+        ) {
+            $address_match = true;
+        }
+    }
+}
+
+if ($address_match) {
     throw new InvalidArgumentException("Address for the customer allready exists.", 409);
 }
 
