@@ -38,7 +38,11 @@ $validate->ValidateAddress($customer, $street, $house, $town, $postal, $country)
 
 $db = new Database(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);
 
-$conn = $db->getConnection();
+try {
+    $conn = $db->getConnection();
+} catch (PDOException $ex) {
+    throw new UnexpectedValueException("Internal error. Cannot connect to database.", 500);
+}
 
 // * * * create address * * *
 
